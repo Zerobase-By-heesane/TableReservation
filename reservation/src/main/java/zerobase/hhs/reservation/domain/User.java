@@ -1,9 +1,15 @@
 package zerobase.hhs.reservation.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import zerobase.hhs.reservation.Type.UserRole;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Getter
 @Entity
 @Table(name = "users")
