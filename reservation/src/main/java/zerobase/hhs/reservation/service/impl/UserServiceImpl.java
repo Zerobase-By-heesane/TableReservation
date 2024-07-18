@@ -60,4 +60,11 @@ public class UserServiceImpl implements UserService {
 
         return new UserLoginResponse(jwtToken);
     }
+
+    @Override
+    public User getUser(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+        );
+    }
 }

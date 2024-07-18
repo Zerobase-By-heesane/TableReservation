@@ -28,7 +28,7 @@ public class JwtProvider {
 
     public Authentication getAuthentication(String accessToken) {
         // Jwt 토큰 복호화
-        Claims claims = parseClaims(accessToken);
+        Claims claims = validateToken(accessToken);
 
         if (claims.get("auth") == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
@@ -40,13 +40,12 @@ public class JwtProvider {
         return new UsernamePasswordAuthenticationToken(claims.getSubject(), null, authorities);
     }
 
-    public boolean validateToken(String token) {
+    public Claims validateToken(String token) {
         try {
-            Jwts.parserBuilder()
+            return Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
-                    .parseClaimsJws(token);
-            return true;
+                    .parseClaimsJws(token).getBody();
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
         } catch (ExpiredJwtException e) {
@@ -56,21 +55,6 @@ public class JwtProvider {
         } catch (IllegalArgumentException e) {
             log.info("JWT claims string is empty.", e);
         }
-        return false;
+        return null;
     }
-
-
-    // accessToken
-    private Claims parseClaims(String accessToken) {
-        try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(accessToken)
-                    .getBody();
-        } catch (ExpiredJwtException e) {
-            return e.getClaims();
-        }
-    }
-
 }

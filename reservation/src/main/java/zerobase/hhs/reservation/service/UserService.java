@@ -1,5 +1,6 @@
 package zerobase.hhs.reservation.service;
 
+import zerobase.hhs.reservation.domain.User;
 import zerobase.hhs.reservation.dto.request.UserLoginRequest;
 import zerobase.hhs.reservation.dto.request.UserRegisterRequest;
 import zerobase.hhs.reservation.dto.response.UserLoginResponse;
@@ -11,4 +12,5 @@ public interface UserService {
 
     UserLoginResponse login(UserLoginRequest request);
 
+    User getUser(Long id);
 }
