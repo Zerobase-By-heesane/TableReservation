@@ -5,7 +5,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -24,24 +23,24 @@ public class LoginFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String token = this.validateToken(request);
-        log.info("request: {}",request);
+        log.info("request: {}", request);
 
         // 토큰 유효성 겅증
-        if(token != null && jwtProvider.validateToken(token)) {
+        if (token != null && jwtProvider.validateToken(token)) {
             Authentication authentication = jwtProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);
-        }else{
+        } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         }
     }
 
-    private String validateToken(HttpServletRequest request){
+    private String validateToken(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
 
-        if(StringUtils.isNotEmpty(token) && token.startsWith("Bearer ")){
+        if (StringUtils.isNotEmpty(token) && token.startsWith("Bearer ")) {
             return token.split(" ")[1];
-        }else return null;
+        } else return null;
     }
 }

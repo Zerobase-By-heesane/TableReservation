@@ -1,6 +1,5 @@
 package zerobase.hhs.reservation.service;
 
-import zerobase.hhs.reservation.Type.UserRole;
 import zerobase.hhs.reservation.dto.request.UserLoginRequest;
 import zerobase.hhs.reservation.dto.request.UserRegisterRequest;
 import zerobase.hhs.reservation.dto.response.UserLoginResponse;
