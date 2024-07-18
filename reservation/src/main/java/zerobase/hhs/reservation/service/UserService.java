@@ -12,5 +12,4 @@ public interface UserService {
 
     UserLoginResponse login(UserLoginRequest request);
 
-    UserRole getUserRole(Long userId);
 }
