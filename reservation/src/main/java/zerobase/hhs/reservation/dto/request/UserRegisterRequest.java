@@ -5,10 +5,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import zerobase.hhs.reservation.Type.UserRole;
+import zerobase.hhs.reservation.domain.User;
 
 @Getter
 @AllArgsConstructor
+@ToString
 @NoArgsConstructor
 public class UserRegisterRequest {
 
@@ -26,5 +29,14 @@ public class UserRegisterRequest {
 
     public void update(String hashPassword){
         this.password = hashPassword;
+    }
+
+    public static User of(UserRegisterRequest request){
+        return User.builder()
+                .name(request.getName())
+                .password(request.getPassword())
+                .email(request.getEmail())
+                .userRole(UserRole.ROLE_USER)
+                .build();
     }
 }
