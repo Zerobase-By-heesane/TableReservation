@@ -1,4 +1,4 @@
-package zerobase.hhs.reservation.dto.request;
+package zerobase.hhs.reservation.dto.request.store;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -8,11 +8,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserLoginRequest {
+public class StoreRemoveRequest {
 
     @NotNull
-    private String email;
-
-    @NotNull
-    private String password;
+    private Long storeId;
 }
