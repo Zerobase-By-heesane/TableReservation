@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
-import zerobase.hhs.reservation.dto.request.UserLoginRequest;
-import zerobase.hhs.reservation.dto.request.UserRegisterRequest;
-import zerobase.hhs.reservation.dto.response.UserLoginResponse;
-import zerobase.hhs.reservation.dto.response.UserRegisterResponse;
+import zerobase.hhs.reservation.dto.request.user.UserLoginRequest;
+import zerobase.hhs.reservation.dto.request.user.UserRegisterRequest;
+import zerobase.hhs.reservation.dto.response.user.UserLoginResponse;
+import zerobase.hhs.reservation.dto.response.user.UserRegisterResponse;
 import zerobase.hhs.reservation.service.UserService;
 
 @RestController
