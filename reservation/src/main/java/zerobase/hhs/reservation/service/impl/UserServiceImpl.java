@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import zerobase.hhs.reservation.Type.ResponseType;
+import zerobase.hhs.reservation.type.ResponseType;
 import zerobase.hhs.reservation.domain.User;
 import zerobase.hhs.reservation.dto.JwtToken;
-import zerobase.hhs.reservation.dto.request.UserLoginRequest;
-import zerobase.hhs.reservation.dto.request.UserRegisterRequest;
-import zerobase.hhs.reservation.dto.response.UserLoginResponse;
-import zerobase.hhs.reservation.dto.response.UserRegisterResponse;
+import zerobase.hhs.reservation.dto.request.user.UserLoginRequest;
+import zerobase.hhs.reservation.dto.request.user.UserRegisterRequest;
+import zerobase.hhs.reservation.dto.response.user.UserLoginResponse;
+import zerobase.hhs.reservation.dto.response.user.UserRegisterResponse;
 import zerobase.hhs.reservation.jwt.JwtTokenUtil;
 import zerobase.hhs.reservation.repository.UserRepository;
 import zerobase.hhs.reservation.service.UserService;
@@ -37,13 +37,13 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(UserRegisterRequest.of(request));
 
-        return new UserRegisterResponse(ResponseType.CREATE_SUCCESS);
+        return new UserRegisterResponse(ResponseType.REGISTER_SUCCESS);
     }
 
     @Override
     public UserLoginResponse login(UserLoginRequest request){
 
-        log.info(request.getEmail());
+
         // 유저가 존재하지 않으면,
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow(
                 () -> new IllegalArgumentException("해당 이메일을 가진 유저가 존재하지 않습니다.")
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        JwtToken jwtToken = jwtTokenUtil.generateToken(user.getId());
+        JwtToken jwtToken = jwtTokenUtil.generateToken(user);
 
         return new UserLoginResponse(jwtToken);
     }
