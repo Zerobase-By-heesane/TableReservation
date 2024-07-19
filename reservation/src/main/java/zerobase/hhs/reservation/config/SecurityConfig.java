@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import zerobase.hhs.reservation.jwt.JwtProvider;
 import zerobase.hhs.reservation.jwt.JwtTokenUtil;
 import zerobase.hhs.reservation.jwt.LoginFilter;
@@ -32,9 +33,10 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(
                         authorizeRequests -> authorizeRequests.requestMatchers("/**").permitAll()
+                                .requestMatchers("/api/store/user/**").hasRole("USER")
 
                 )
-                .addFilter(new LoginFilter(jwtProvider, jwtTokenUtil, userService));
+                .addFilterAfter(new LoginFilter(jwtProvider, jwtTokenUtil, userService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
