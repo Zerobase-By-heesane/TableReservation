@@ -2,10 +2,11 @@ package zerobase.hhs.reservation.service;
 
 import zerobase.hhs.reservation.dto.request.store.StoreRegisterRequest;
 import zerobase.hhs.reservation.dto.request.store.StoreRemoveRequest;
-import zerobase.hhs.reservation.dto.response.store.*;
 import zerobase.hhs.reservation.dto.request.store.StoreUpdateRequest;
-
-import java.util.List;
+import zerobase.hhs.reservation.dto.response.store.StoreListResponse;
+import zerobase.hhs.reservation.dto.response.store.StoreRegisterResponse;
+import zerobase.hhs.reservation.dto.response.store.StoreRemoveResponse;
+import zerobase.hhs.reservation.dto.response.store.StoreUpdateResponse;
 
 /**
  * Interface

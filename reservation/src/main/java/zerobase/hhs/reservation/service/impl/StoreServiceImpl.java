@@ -13,7 +13,6 @@ import zerobase.hhs.reservation.dto.response.store.*;
 import zerobase.hhs.reservation.repository.StoreRepository;
 import zerobase.hhs.reservation.repository.UserRepository;
 import zerobase.hhs.reservation.service.StoreService;
-import zerobase.hhs.reservation.service.UserService;
 import zerobase.hhs.reservation.type.ResponseType;
 
 @Slf4j
