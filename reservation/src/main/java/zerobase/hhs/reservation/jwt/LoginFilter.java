@@ -53,7 +53,7 @@ public class LoginFilter extends OncePerRequestFilter {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             } else {
-                String newAccessToken = jwtTokenUtil.generateToken(user.getId()).accessToken();
+                String newAccessToken = jwtTokenUtil.generateToken(user).accessToken();
                 response.setHeader("Authorization", "Bearer " + newAccessToken);
                 token = newAccessToken;
             }
