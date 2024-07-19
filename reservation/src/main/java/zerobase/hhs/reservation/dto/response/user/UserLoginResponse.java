@@ -1,4 +1,4 @@
-package zerobase.hhs.reservation.dto.response;
+package zerobase.hhs.reservation.dto.response.user;
 
 import lombok.Getter;
 import zerobase.hhs.reservation.dto.JwtToken;

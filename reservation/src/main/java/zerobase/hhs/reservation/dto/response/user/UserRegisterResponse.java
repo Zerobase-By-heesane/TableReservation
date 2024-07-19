@@ -1,8 +1,8 @@
-package zerobase.hhs.reservation.dto.response;
+package zerobase.hhs.reservation.dto.response.user;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import zerobase.hhs.reservation.Type.ResponseType;
+import zerobase.hhs.reservation.type.ResponseType;
 
 @Getter
 public class UserRegisterResponse {

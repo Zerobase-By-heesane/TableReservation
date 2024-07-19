@@ -1,4 +1,4 @@
-package zerobase.hhs.reservation.dto.request;
+package zerobase.hhs.reservation.dto.request.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import zerobase.hhs.reservation.Type.UserRole;
+import zerobase.hhs.reservation.type.UserRole;
 import zerobase.hhs.reservation.domain.User;
 
 @Getter
