@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import zerobase.hhs.reservation.Type.UserRole;
+import zerobase.hhs.reservation.type.UserRole;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,6 +19,7 @@ public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name="user_id")
     private Long id;
 
     @Column(name="user_name")
@@ -34,4 +37,10 @@ public class User extends BaseTimeEntity {
     @Column(name="role")
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
+
+    @OneToMany(mappedBy="manager")
+    private List<Store> stores;
+
+    @OneToMany(mappedBy="user")
+    private List<Reservation> reservations;
 }
