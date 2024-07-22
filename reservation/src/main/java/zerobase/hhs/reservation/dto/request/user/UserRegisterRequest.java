@@ -36,7 +36,7 @@ public class UserRegisterRequest {
                 .name(request.getName())
                 .password(request.getPassword())
                 .email(request.getEmail())
-                .userRole(UserRole.ROLE_USER)
+                .userRole(request.getRole())
                 .build();
     }
 }
