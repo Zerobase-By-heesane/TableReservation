@@ -32,8 +32,9 @@ public class SecurityConfig {
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(
-                        authorizeRequests -> authorizeRequests.requestMatchers("/**").permitAll()
-                                .requestMatchers("/api/store/user/**").hasRole("USER")
+                        authorizeRequests -> authorizeRequests.requestMatchers("/api/auth/**","/swagger-ui/**").permitAll()
+                                .requestMatchers("/api/user/**").hasRole("USER")
+                                .requestMatchers("/api/partner/**").hasRole("PARTNER")
 
                 )
                 .addFilterAfter(new LoginFilter(jwtProvider, jwtTokenUtil, userService), UsernamePasswordAuthenticationFilter.class);
