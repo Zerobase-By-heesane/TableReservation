@@ -25,7 +25,7 @@ public class Reservation {
     private LocalDateTime reserveTime;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    @Column(name = "check_in_time", nullable = true)
+    @Column(name = "check_in_time")
     private LocalDateTime checkInTime;
 
     @Column(name = "people", nullable = false)
