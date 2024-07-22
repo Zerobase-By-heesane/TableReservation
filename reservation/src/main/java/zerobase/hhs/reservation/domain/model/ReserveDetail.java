@@ -3,7 +3,6 @@ package zerobase.hhs.reservation.domain.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import zerobase.hhs.reservation.domain.Reservation;
 import zerobase.hhs.reservation.type.ApprovedType;
 import zerobase.hhs.reservation.type.ReserveType;
