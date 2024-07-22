@@ -23,7 +23,7 @@ public interface ReservationService {
 
     // 파트너
     // 예약 목록
-    ReserveListResponse getReservationList(ReserveListRequest request);
+    ReserveListResponse getReservationList(ReserveRequest request);
 
     // 예약 승인
     ReserveConfirmResponse approveReservation(ReserveConfirmRequest request);
