@@ -10,6 +10,10 @@ import zerobase.hhs.reservation.domain.User;
 import zerobase.hhs.reservation.domain.model.ReserveDetail;
 import zerobase.hhs.reservation.dto.request.reserve.*;
 import zerobase.hhs.reservation.dto.response.reserve.*;
+import zerobase.hhs.reservation.exception.ExceptionsType;
+import zerobase.hhs.reservation.exception.exceptions.CannotFindReservation;
+import zerobase.hhs.reservation.exception.exceptions.CannotFindStore;
+import zerobase.hhs.reservation.exception.exceptions.CannotFindUser;
 import zerobase.hhs.reservation.repository.ReservationRepository;
 import zerobase.hhs.reservation.repository.StoreRepository;
 import zerobase.hhs.reservation.repository.UserRepository;
@@ -36,7 +40,7 @@ public class ReservationServiceImpl implements ReservationService {
         Long userId = request.getUserId();
 
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+                () -> new CannotFindUser(ExceptionsType.CANNOT_FIND_USER)
         );
 
         List<Reservation> allReservationByUser = user.getReservations();
@@ -61,11 +65,11 @@ public class ReservationServiceImpl implements ReservationService {
 
         // 요청 정보 찾기
         User requestUser = userRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+                () -> new CannotFindUser(ExceptionsType.CANNOT_FIND_USER)
         );
 
         Store requestStore = storeRepository.findById(storeId).orElseThrow(
-                () -> new IllegalArgumentException("해당 가게가 존재하지 않습니다.")
+                () -> new CannotFindStore(ExceptionsType.CANNOT_FIND_STORE)
         );
 
         //TODO : 수용인원과 예약인원 비교 후 예약 가능 여부 확인
@@ -102,7 +106,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         // 예약 정보 찾기
         Reservation reservation = reservationRepository.findById(reserveId).orElseThrow(
-                () -> new IllegalArgumentException("해당 예약이 존재하지 않습니다.")
+                () -> new CannotFindReservation(ExceptionsType.CANNOT_FIND_RESERVATION)
         );
 
         // 예약한 사람과 취소하려는 사람이 같은지 확인
@@ -128,7 +132,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         // 예약 정보 찾기
         Reservation reservation = reservationRepository.findById(reserveId).orElseThrow(
-                () -> new IllegalArgumentException("해당 예약이 존재하지 않습니다.")
+                () -> new CannotFindReservation(ExceptionsType.CANNOT_FIND_RESERVATION)
         );
 
         // 예약한 사람과 취소하려는 사람이 같은지 확인
@@ -160,7 +164,7 @@ public class ReservationServiceImpl implements ReservationService {
         Long userId = request.getUserId();
 
         Reservation reservation = reservationRepository.findById(reservedId).orElseThrow(
-                () -> new IllegalArgumentException("해당 예약이 존재하지 않습니다.")
+                () -> new CannotFindReservation(ExceptionsType.CANNOT_FIND_RESERVATION)
         );
 
         if (!Objects.equals(reservation.getUser().getId(), userId)) {
@@ -189,7 +193,7 @@ public class ReservationServiceImpl implements ReservationService {
         Long userId = request.getUserId();
 
         Store store = storeRepository.findById(storeId).orElseThrow(
-                () -> new IllegalArgumentException("해당 가게가 존재하지 않습니다.")
+                () -> new CannotFindStore(ExceptionsType.CANNOT_FIND_STORE)
         );
 
         if (!Objects.equals(store.getManager().getId(), userId)) {
@@ -215,11 +219,11 @@ public class ReservationServiceImpl implements ReservationService {
         Long storeId = request.getStoreId();
 
         Reservation reservation = reservationRepository.findById(reserveId).orElseThrow(
-                () -> new IllegalArgumentException("해당 예약이 존재하지 않습니다.")
+                () -> new CannotFindReservation(ExceptionsType.CANNOT_FIND_RESERVATION)
         );
 
         Store store = storeRepository.findById(storeId).orElseThrow(
-                () -> new IllegalArgumentException("해당 가게가 존재하지 않습니다.")
+                () -> new CannotFindStore(ExceptionsType.CANNOT_FIND_STORE)
         );
 
         // 가게의 매니저와 요청한 유저가 같은지 확인
@@ -245,11 +249,11 @@ public class ReservationServiceImpl implements ReservationService {
         Long storeId = request.getStoreId();
 
         Reservation reservation = reservationRepository.findById(reserveId).orElseThrow(
-                () -> new IllegalArgumentException("해당 예약이 존재하지 않습니다.")
+                () -> new CannotFindReservation(ExceptionsType.CANNOT_FIND_RESERVATION)
         );
 
         Store store = storeRepository.findById(storeId).orElseThrow(
-                () -> new IllegalArgumentException("해당 가게가 존재하지 않습니다.")
+                () -> new CannotFindStore(ExceptionsType.CANNOT_FIND_STORE)
         );
 
         // 가게의 매니저와 요청한 유저가 같은지 확인

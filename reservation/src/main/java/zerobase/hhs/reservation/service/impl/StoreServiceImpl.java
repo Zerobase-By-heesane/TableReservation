@@ -10,6 +10,9 @@ import zerobase.hhs.reservation.dto.request.store.StoreRegisterRequest;
 import zerobase.hhs.reservation.dto.request.store.StoreRemoveRequest;
 import zerobase.hhs.reservation.dto.request.store.StoreUpdateRequest;
 import zerobase.hhs.reservation.dto.response.store.*;
+import zerobase.hhs.reservation.exception.ExceptionsType;
+import zerobase.hhs.reservation.exception.exceptions.CannotFindStore;
+import zerobase.hhs.reservation.exception.exceptions.CannotFindUser;
 import zerobase.hhs.reservation.repository.StoreRepository;
 import zerobase.hhs.reservation.repository.UserRepository;
 import zerobase.hhs.reservation.service.StoreService;
@@ -34,7 +37,7 @@ public class StoreServiceImpl implements StoreService {
 
         try {
             User user = userRepository.findById(request.getUserId()).orElseThrow(
-                    () -> new IllegalArgumentException("해당 유저가 없습니다."));
+                    () -> new CannotFindUser(ExceptionsType.CANNOT_FIND_USER));
             Store store = Store.builder()
                     .name(request.getStoreName())
                     .address(request.getStoreAddress())
@@ -59,7 +62,7 @@ public class StoreServiceImpl implements StoreService {
             Long storeId = request.getStoreId();
 
             Store store = storeRepository.findById(storeId).orElseThrow(
-                    () -> new IllegalArgumentException("해당 가게가 없습니다.")
+                    () -> new CannotFindStore(ExceptionsType.CANNOT_FIND_STORE)
             );
 
             store.update(request);
