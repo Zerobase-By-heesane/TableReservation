@@ -3,6 +3,7 @@ package zerobase.hhs.reservation.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import zerobase.hhs.reservation.domain.Reservation;
 import zerobase.hhs.reservation.domain.Store;
 import zerobase.hhs.reservation.domain.User;
@@ -48,6 +49,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     // 예약 신청
+    @Transactional
     @Override
     public ReserveResponse reserve(ReserveRegisterRequest request) {
 
@@ -93,6 +95,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     // 예약 취소
+    @Transactional
     @Override
     public ReserveCancelResponse cancel(ReserveCancelRequest request) {
 
@@ -119,6 +122,7 @@ public class ReservationServiceImpl implements ReservationService {
      * @param request 예약 체크인 요청
      * @return 성공, 실패 여부
      */
+    @Transactional
     @Override
     public ReserveCheckInResponse checkIn(ReserveCheckInRequest request) {
         // 예약의 고유 id
@@ -132,9 +136,12 @@ public class ReservationServiceImpl implements ReservationService {
                 () -> new IllegalArgumentException("해당 예약이 존재하지 않습니다.")
         );
 
+        log.info("reservation user id : {}", reservation.getUser().getId());
+        log.info("request user id : {}", userId);
+
         // 예약한 사람과 취소하려는 사람이 같은지 확인
         if (!Objects.equals(reservation.getUser().getId(), userId)) {
-            return new ReserveCheckInResponse(ResponseType.STORE_RESERVE_CANCEL_FAIL, null);
+            return new ReserveCheckInResponse(ResponseType.STORE_RESERVE_CHECKIN_FAIL, null);
         }
 
         // 예약 승인 여부 검사
@@ -146,11 +153,13 @@ public class ReservationServiceImpl implements ReservationService {
         LocalDateTime now = LocalDateTime.now();
 
         reservation.updateCheckInTime(now);
-
-        return new ReserveCheckInResponse(ResponseType.STORE_RESERVE_CANCEL_SUCCESS,now);
+        reservation.updateCheckStatus(ReserveType.CHECK_IN);
+        log.info("reservation check in time : {}", reservation.getCheckInTime());
+        return new ReserveCheckInResponse(ResponseType.STORE_RESERVE_CHECKIN_SUCCESS,now);
     }
 
     // 체크 아웃
+    @Transactional
     @Override
     public ReserveCheckOutResponse checkOut(ReserveCheckOutRequest request) {
 
@@ -173,13 +182,16 @@ public class ReservationServiceImpl implements ReservationService {
 
         reservation.updateCheckStatus(ReserveType.CHECK_OUT);
 
+
         return new ReserveCheckOutResponse(ResponseType.STORE_RESERVE_CHECKOUT_SUCCESS, LocalDateTime.now());
     }
 
     // 해당 가계의 예약 내역 리스트를 가져오는 메서드
+    @Transactional
     @Override
-    public ReserveListResponse getReservationList(ReserveListRequest request) {
+    public ReserveListResponse getReservationList(ReserveRequest request) {
 
+        log.info("request : {}", request.toString());
         Long storeId = request.getStoreId();
 
         Long userId = request.getUserId();
@@ -200,6 +212,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     // 예약 승인
+    @Transactional
     @Override
     public ReserveConfirmResponse approveReservation(ReserveConfirmRequest request) {
 
@@ -217,18 +230,22 @@ public class ReservationServiceImpl implements ReservationService {
                 () -> new IllegalArgumentException("해당 가게가 존재하지 않습니다.")
         );
 
+        log.info("store's manager user id : {}", store.getManager().getId());
+        log.info("partner user id : {}", partnerUserId);
+
         // 가게의 매니저와 요청한 유저가 같은지 확인
         if (!Objects.equals(store.getManager().getId(), partnerUserId)) {
-            return new ReserveConfirmResponse(ResponseType.STORE_RESERVE_CHECKIN_FAIL);
+            return new ReserveConfirmResponse(ResponseType.STORE_RESERVE_CONFIRM_FAIL);
         }
 
         // 승인
         reservation.updateApprovedStatus(ApprovedType.APPROVED);
 
-        return new ReserveConfirmResponse(ResponseType.STORE_RESERVE_CHECKIN_SUCCESS);
+        return new ReserveConfirmResponse(ResponseType.STORE_RESERVE_CONFIRM_SUCCESS);
     }
 
     // 예약 거부
+    @Transactional
     @Override
     public ReserveDenyResponse rejectReservation(ReserveDenyRequest request) {
 
