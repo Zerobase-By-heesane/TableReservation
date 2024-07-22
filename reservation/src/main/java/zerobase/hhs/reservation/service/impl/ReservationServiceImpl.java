@@ -71,9 +71,6 @@ public class ReservationServiceImpl implements ReservationService {
         //TODO : 수용인원과 예약인원 비교 후 예약 가능 여부 확인
 
         try {
-
-            log.info("approved Type : {}", ApprovedType.NOT_YET);
-
             // 우선 일단 그냥 구현
             Reservation reservation = Reservation.builder()
                     .reserveTime(request.getReserveTime())
@@ -84,11 +81,9 @@ public class ReservationServiceImpl implements ReservationService {
                     .store(requestStore)
                     .user(requestUser)
                     .build();
-            log.info("reservation : {}", reservation.toString());
-            Reservation save = reservationRepository.save(reservation);
-            log.warn("save : {}", save);
+
+            reservationRepository.save(reservation);
         } catch (Exception e) {
-            log.error("error : {}", e.getMessage());
             return new ReserveResponse(ResponseType.STORE_RESERVE_FAIL);
         }
         return new ReserveResponse(ResponseType.STORE_RESERVE_SUCCESS);
@@ -136,9 +131,6 @@ public class ReservationServiceImpl implements ReservationService {
                 () -> new IllegalArgumentException("해당 예약이 존재하지 않습니다.")
         );
 
-        log.info("reservation user id : {}", reservation.getUser().getId());
-        log.info("request user id : {}", userId);
-
         // 예약한 사람과 취소하려는 사람이 같은지 확인
         if (!Objects.equals(reservation.getUser().getId(), userId)) {
             return new ReserveCheckInResponse(ResponseType.STORE_RESERVE_CHECKIN_FAIL, null);
@@ -146,7 +138,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         // 예약 승인 여부 검사
         if(reservation.getApprovedStatus() != ApprovedType.APPROVED){
-            return new ReserveCheckInResponse(ResponseType.STORE_RESERVE_CANCEL_FAIL, null);
+            return new ReserveCheckInResponse(ResponseType.STORE_RESERVE_CHECKIN_FAIL, null);
         }
 
         // 체크인 시간 업데이트
@@ -154,7 +146,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         reservation.updateCheckInTime(now);
         reservation.updateCheckStatus(ReserveType.CHECK_IN);
-        log.info("reservation check in time : {}", reservation.getCheckInTime());
+
         return new ReserveCheckInResponse(ResponseType.STORE_RESERVE_CHECKIN_SUCCESS,now);
     }
 
@@ -230,9 +222,6 @@ public class ReservationServiceImpl implements ReservationService {
                 () -> new IllegalArgumentException("해당 가게가 존재하지 않습니다.")
         );
 
-        log.info("store's manager user id : {}", store.getManager().getId());
-        log.info("partner user id : {}", partnerUserId);
-
         // 가게의 매니저와 요청한 유저가 같은지 확인
         if (!Objects.equals(store.getManager().getId(), partnerUserId)) {
             return new ReserveConfirmResponse(ResponseType.STORE_RESERVE_CONFIRM_FAIL);
@@ -265,12 +254,12 @@ public class ReservationServiceImpl implements ReservationService {
 
         // 가게의 매니저와 요청한 유저가 같은지 확인
         if (!Objects.equals(store.getManager().getId(), partnerUserId)) {
-            return new ReserveDenyResponse(ResponseType.STORE_RESERVE_CHECKIN_FAIL);
+            return new ReserveDenyResponse(ResponseType.STORE_RESERVE_DENY_FAIL);
         }
 
         // 승인
         reservation.updateApprovedStatus(ApprovedType.APPROVED);
 
-        return new ReserveDenyResponse(ResponseType.STORE_RESERVE_CHECKIN_SUCCESS);
+        return new ReserveDenyResponse(ResponseType.STORE_RESERVE_DENY_SUCCESS);
     }
 }
