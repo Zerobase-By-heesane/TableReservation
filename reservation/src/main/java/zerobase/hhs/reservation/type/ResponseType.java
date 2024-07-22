@@ -31,6 +31,9 @@ public enum ResponseType {
     STORE_RESERVE_CHECKIN_SUCCESS(HttpStatus.OK, "체크인 성공"),
     STORE_RESERVE_CHECKIN_FAIL(HttpStatus.BAD_REQUEST, "체크인 실패"),
 
+    STORE_RESERVE_CONFIRM_SUCCESS(HttpStatus.OK, "예약 승인 성공"),
+    STORE_RESERVE_CONFIRM_FAIL(HttpStatus.BAD_REQUEST, "예약 승인 실패"),
+
     STORE_RESERVE_CHECKOUT_SUCCESS(HttpStatus.OK, "체크아웃 성공"),
     STORE_RESERVE_CHECKOUT_FAIL(HttpStatus.BAD_REQUEST, "체크아웃 실패"),
 
