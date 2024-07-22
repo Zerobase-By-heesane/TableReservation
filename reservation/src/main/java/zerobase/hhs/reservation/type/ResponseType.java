@@ -23,7 +23,19 @@ public enum ResponseType {
     STORE_DELETE_FAIL(HttpStatus.BAD_REQUEST, "가게 삭제 실패"),
 
     STORE_RESERVE_SUCCESS(HttpStatus.OK, "예약 성공"),
-    STORE_RESERVE_FAIL(HttpStatus.BAD_REQUEST, "예약 실패");
+    STORE_RESERVE_FAIL(HttpStatus.BAD_REQUEST, "예약 실패"),
+
+    STORE_RESERVE_CANCEL_SUCCESS(HttpStatus.OK, "예약 취소 성공"),
+    STORE_RESERVE_CANCEL_FAIL(HttpStatus.BAD_REQUEST, "예약 취소 실패"),
+
+    STORE_RESERVE_CHECKIN_SUCCESS(HttpStatus.OK, "체크인 성공"),
+    STORE_RESERVE_CHECKIN_FAIL(HttpStatus.BAD_REQUEST, "체크인 실패"),
+
+    STORE_RESERVE_CHECKOUT_SUCCESS(HttpStatus.OK, "체크아웃 성공"),
+    STORE_RESERVE_CHECKOUT_FAIL(HttpStatus.BAD_REQUEST, "체크아웃 실패"),
+
+    STORE_RESERVE_LIST_SUCCESS(HttpStatus.OK, "예약 목록 조회 성공"),
+    STORE_RESERVE_LIST_FAIL(HttpStatus.BAD_REQUEST, "예약 목록 조회 실패");
 
     private final HttpStatus status;
     private final String message;
