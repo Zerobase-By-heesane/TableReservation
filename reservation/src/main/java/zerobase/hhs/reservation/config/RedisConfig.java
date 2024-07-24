@@ -41,6 +41,8 @@ public class RedisConfig {
     @Value("${jwt.refresh-expiration}")
     private Integer REFRESH_EXPIRATION;
 
+    private Integer STORES_EXPIRATION = 180;
+
     @Bean
     public RedisConnectionFactory redisConnectionFactory(){
         RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
@@ -57,9 +59,9 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<?, ?> redisTemplate(){
+    public RedisTemplate<String, Object> redisTemplate(){
         // 사람의 수를 확인하기위한
-        RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 
         redisTemplate.setConnectionFactory(redisConnectionFactory());
 
@@ -80,9 +82,8 @@ public class RedisConfig {
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
         return RedisCacheManager.builder(redisConnectionFactory)
-                .cacheDefaults(redisCacheConfiguration(60))
                 .withCacheConfiguration("refresh", redisCacheConfiguration(REFRESH_EXPIRATION))
-                .withCacheConfiguration("reservation", redisCacheConfiguration(180))
+                .withCacheConfiguration("stores", redisCacheConfiguration(STORES_EXPIRATION))
                 .build();
     }
 
