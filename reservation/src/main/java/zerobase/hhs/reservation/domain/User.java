@@ -43,4 +43,8 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy="user")
     private List<Reservation> reservations;
+
+    public void updateRefresh(String refresh){
+        this.refresh = refresh;
+    }
 }
