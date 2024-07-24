@@ -2,20 +2,25 @@ package zerobase.hhs.reservation.dto.response.store;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import zerobase.hhs.reservation.domain.Store;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
-public class StoreResponse {
+@NoArgsConstructor
+public class StoreResponse implements Serializable {
 
-    private final String storeName;
-    private final String storeAddress;
-    private final String storePhone;
-    private final String storeDescription;
-    private final Long maxCapacity;
+    private static final long serialVersionUID = 1L;
+
+    private String storeName;
+    private String storeAddress;
+    private String storePhone;
+    private String storeDescription;
+    private Long maxCapacity;
 
     public static List<StoreResponse> list(List<Store> stores){
         return stores.stream().map(i -> new StoreResponse(
