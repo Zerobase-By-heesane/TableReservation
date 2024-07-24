@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import zerobase.hhs.reservation.jwt.JwtProvider;
 import zerobase.hhs.reservation.jwt.JwtTokenUtil;
 import zerobase.hhs.reservation.jwt.LoginFilter;
+import zerobase.hhs.reservation.service.RefreshService;
 import zerobase.hhs.reservation.service.UserService;
 
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class SecurityConfig {
     private final JwtProvider jwtProvider;
     private final UserService userService;
     private final JwtTokenUtil jwtTokenUtil;
+    private final RefreshService refreshService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -33,11 +35,11 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(
                         authorizeRequests -> authorizeRequests.requestMatchers("/v3/**","/api/auth/**","/swagger-ui/**").permitAll()
-                                .requestMatchers("/api/user/**").hasRole("USER")
+                                .requestMatchers("/api/user/**").hasAnyAuthority("USER","PARTNER")
                                 .requestMatchers("/api/partner/**").hasRole("PARTNER")
 
                 )
-                .addFilterAfter(new LoginFilter(jwtProvider, jwtTokenUtil, userService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(new LoginFilter(jwtProvider, jwtTokenUtil, userService,refreshService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
