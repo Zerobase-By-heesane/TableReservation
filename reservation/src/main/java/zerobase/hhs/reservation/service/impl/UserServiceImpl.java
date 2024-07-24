@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import zerobase.hhs.reservation.domain.User;
 import zerobase.hhs.reservation.dto.JwtToken;
 import zerobase.hhs.reservation.dto.request.user.UserLoginRequest;
@@ -17,6 +18,7 @@ import zerobase.hhs.reservation.exception.exceptions.CannotFindUserByEmail;
 import zerobase.hhs.reservation.exception.exceptions.DontMatchPassword;
 import zerobase.hhs.reservation.jwt.JwtTokenUtil;
 import zerobase.hhs.reservation.repository.UserRepository;
+import zerobase.hhs.reservation.service.RefreshService;
 import zerobase.hhs.reservation.service.UserService;
 import zerobase.hhs.reservation.type.ResponseType;
 
@@ -28,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
+    private final RefreshService refreshService;
 
     /**
      * 회원가입
@@ -62,6 +65,7 @@ public class UserServiceImpl implements UserService {
      * @return 로그인 결과 응답
      *                - jwtToken : jwt 토큰
      */
+    @Transactional
     @Override
     public UserLoginResponse login(UserLoginRequest request){
 
@@ -79,6 +83,13 @@ public class UserServiceImpl implements UserService {
         }
 
         JwtToken jwtToken = jwtTokenUtil.generateToken(user);
+
+        // Refresh Token 저장
+        user.updateRefresh(jwtToken.refreshToken());
+        userRepository.save(user);
+
+        // Refresh Token 캐싱
+        refreshService.cacheRefreshToken(user.getId());
 
         return new UserLoginResponse(jwtToken);
     }
