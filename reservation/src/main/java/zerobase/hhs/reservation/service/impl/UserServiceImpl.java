@@ -29,6 +29,15 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
 
+    /**
+     * 회원가입
+     * @param request 회원가입 정보 요청
+     *                - name : 이름
+     *                - password : 비밀번호
+     *                - email : 이메일
+     *                - role : 권한 (default : USER)
+     * @return 회원가입 결과 응답
+     */
     @Override
     public UserRegisterResponse register(UserRegisterRequest request) {
 
@@ -45,6 +54,14 @@ public class UserServiceImpl implements UserService {
         return new UserRegisterResponse(ResponseType.REGISTER_SUCCESS);
     }
 
+    /**
+     * 로그인
+     * @param request 로그인 정보 요청
+     *                - email : 이메일
+     *                - password : 비밀번호
+     * @return 로그인 결과 응답
+     *                - jwtToken : jwt 토큰
+     */
     @Override
     public UserLoginResponse login(UserLoginRequest request){
 
@@ -66,6 +83,11 @@ public class UserServiceImpl implements UserService {
         return new UserLoginResponse(jwtToken);
     }
 
+    /**
+     * 유저 정보 조회
+     * @param id 유저의 고유 id 값
+     * @return id에 해당하는 유저 정보
+     */
     @Override
     public User getUser(Long id) {
         return userRepository.findById(id).orElseThrow(
