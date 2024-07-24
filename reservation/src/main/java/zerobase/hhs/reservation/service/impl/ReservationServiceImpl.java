@@ -35,6 +35,11 @@ public class ReservationServiceImpl implements ReservationService {
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
 
+    /**
+     * 내 예약 리스트 가져오기
+     * @param request 내 예약 리스트 요청
+     * @return 내 예약 리스트 응답
+     */
     @Override
     public ReserveListResponse getMyReservationList(ReserveListRequest request) {
         Long userId = request.getUserId();
@@ -52,7 +57,11 @@ public class ReservationServiceImpl implements ReservationService {
         );
     }
 
-    // 예약 신청
+    /**
+     * 예약하기
+     * @param request 예약 요청
+     * @return 예약 성공 여부
+     */
     @Transactional
     @Override
     public ReserveResponse reserve(ReserveRegisterRequest request) {
@@ -93,7 +102,11 @@ public class ReservationServiceImpl implements ReservationService {
         return new ReserveResponse(ResponseType.STORE_RESERVE_SUCCESS);
     }
 
-    // 예약 취소
+    /**
+     * 예약 취소
+     * @param request 예약 취소 요청
+     * @return 성공, 실패 여부
+     */
     @Transactional
     @Override
     public ReserveCancelResponse cancel(ReserveCancelRequest request) {
@@ -154,7 +167,11 @@ public class ReservationServiceImpl implements ReservationService {
         return new ReserveCheckInResponse(ResponseType.STORE_RESERVE_CHECKIN_SUCCESS,now);
     }
 
-    // 체크 아웃
+    /**
+     * 예약 체크아웃
+     * @param request 예약 체크아웃 요청
+     * @return 성공, 실패 여부
+     */
     @Transactional
     @Override
     public ReserveCheckOutResponse checkOut(ReserveCheckOutRequest request) {
@@ -182,7 +199,11 @@ public class ReservationServiceImpl implements ReservationService {
         return new ReserveCheckOutResponse(ResponseType.STORE_RESERVE_CHECKOUT_SUCCESS, LocalDateTime.now());
     }
 
-    // 해당 가계의 예약 내역 리스트를 가져오는 메서드
+    /**
+     * 가게의 예약 리스트 가져오기
+     * @param request 가게의 예약 리스트 요청
+     * @return 가게의 예약 리스트 응답
+     */
     @Transactional
     @Override
     public ReserveListResponse getReservationList(ReserveRequest request) {
@@ -207,7 +228,11 @@ public class ReservationServiceImpl implements ReservationService {
         return new ReserveListResponse(ResponseType.STORE_RESERVE_LIST_SUCCESS, list);
     }
 
-    // 예약 승인
+    /**
+     * 예약 승인
+     * @param request 예약 승인 요청
+     * @return 성공, 실패 여부
+     */
     @Transactional
     @Override
     public ReserveConfirmResponse approveReservation(ReserveConfirmRequest request) {
@@ -237,7 +262,11 @@ public class ReservationServiceImpl implements ReservationService {
         return new ReserveConfirmResponse(ResponseType.STORE_RESERVE_CONFIRM_SUCCESS);
     }
 
-    // 예약 거부
+    /**
+     * 예약 거절
+     * @param request 예약 거절 요청
+     * @return 성공, 실패 여부
+     */
     @Transactional
     @Override
     public ReserveDenyResponse rejectReservation(ReserveDenyRequest request) {
