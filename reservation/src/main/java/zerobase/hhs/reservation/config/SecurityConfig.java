@@ -32,7 +32,7 @@ public class SecurityConfig {
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(
-                        authorizeRequests -> authorizeRequests.requestMatchers("/api/auth/**","/swagger-ui/**").permitAll()
+                        authorizeRequests -> authorizeRequests.requestMatchers("/v3/**","/api/auth/**","/swagger-ui/**").permitAll()
                                 .requestMatchers("/api/user/**").hasRole("USER")
                                 .requestMatchers("/api/partner/**").hasRole("PARTNER")
 
