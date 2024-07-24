@@ -4,4 +4,5 @@ public class RedisKeyType {
     public static final String RESERVATION = "reservationCache";
     public static final String REFRESH = "refreshCache";
     public static final String STORES = "storesCache";
+    public static final String USER = "userCache";
 }
