@@ -28,7 +28,7 @@ public class ReserveDetail {
     private final LocalDateTime reservedTime;
 
     // 식당 예약 인원
-    private final int reservedPeople;
+    private final Long reservedPeople;
 
     // 체크인 상태
     private final ReserveType isCheckIn;
