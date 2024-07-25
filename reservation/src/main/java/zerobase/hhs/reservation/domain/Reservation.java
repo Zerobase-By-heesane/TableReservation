@@ -29,7 +29,7 @@ public class Reservation {
     private LocalDateTime checkInTime;
 
     @Column(name = "people", nullable = false)
-    private int people;
+    private Long people;
 
     @Column(name = "check_status", nullable = false)
     @Enumerated(EnumType.STRING)
