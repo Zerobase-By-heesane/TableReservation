@@ -9,13 +9,13 @@ import java.time.LocalDateTime;
 
 @Getter
 public class ReserveRegisterRequest extends ReserveRequest{
-    private final int people;
+    private final Long people;
     private final LocalDateTime reserveTime;
 
     public ReserveRegisterRequest(
             @NotNull @Min(1) Long storeId,
             @NotNull @Min(1) Long userId,
-            @Min(1) int people,
+            @Min(1) Long people,
             @DateTimeFormat(pattern="yyyy-MM-dd HH:mm") LocalDateTime reserveTime
     ) {
         super(storeId, userId);
