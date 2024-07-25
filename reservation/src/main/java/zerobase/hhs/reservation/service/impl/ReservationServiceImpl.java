@@ -2,6 +2,7 @@ package zerobase.hhs.reservation.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zerobase.hhs.reservation.domain.Reservation;
@@ -19,6 +20,7 @@ import zerobase.hhs.reservation.repository.StoreRepository;
 import zerobase.hhs.reservation.repository.UserRepository;
 import zerobase.hhs.reservation.service.ReservationService;
 import zerobase.hhs.reservation.type.ApprovedType;
+import zerobase.hhs.reservation.type.RedisKeyType;
 import zerobase.hhs.reservation.type.ReserveType;
 import zerobase.hhs.reservation.type.ResponseType;
 
@@ -34,6 +36,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
+    private final RedisTemplate<String,Long>  redisTemplate;
 
     /**
      * 내 예약 리스트 가져오기
@@ -81,24 +84,41 @@ public class ReservationServiceImpl implements ReservationService {
                 () -> new CannotFindStore(ExceptionsType.CANNOT_FIND_STORE)
         );
 
-        //TODO : 수용인원과 예약인원 비교 후 예약 가능 여부 확인
+        // 최대 입장 가능 인원 수
+        Long storeMaxCapacity = requestStore.getMaxCapacity();
 
-        try {
-            // 우선 일단 그냥 구현
-            Reservation reservation = Reservation.builder()
-                    .reserveTime(request.getReserveTime())
-                    .checkInTime(null)
-                    .people(request.getPeople())
-                    .checkStatus(ReserveType.NOT_YET)
-                    .approvedStatus(ApprovedType.NOT_YET)
-                    .store(requestStore)
-                    .user(requestUser)
-                    .build();
+        // storesCache::rest::{storeId}
+        // storesCache::rest::1
+        // 현재 가게에 몇명의 사람이 있는지 확인
+        String key = RedisKeyType.STORES + "::rest::" + storeId;
+        Long nowPeople = redisTemplate.opsForValue().get(key);
 
-            reservationRepository.save(reservation);
-        } catch (Exception e) {
-            return new ReserveResponse(ResponseType.STORE_RESERVE_FAIL);
+        // 기존에 key값이 없었을 경우, 0으로 초기화
+        if(nowPeople == null){
+            nowPeople = 0L;
         }
+
+        // 현재 가게 안의 사람과 예약하려는 인원이 최대 수용인원보다 많거나 같다면 예약 실패
+        if( nowPeople + request.getPeople() >= storeMaxCapacity){
+            return new ReserveResponse(ResponseType.STORE_RESERVE_FAIL_OVER_CAPACITY);
+        }
+        // 예약 정보 생성
+        Reservation reservation = Reservation.builder()
+                .reserveTime(request.getReserveTime())
+                .checkInTime(null)
+                .people(request.getPeople())
+                .checkStatus(ReserveType.NOT_YET)
+                .approvedStatus(ApprovedType.NOT_YET)
+                .store(requestStore)
+                .user(requestUser)
+                .build();
+
+        // 예약 정보 저장
+        reservationRepository.save(reservation);
+
+        // 예약한 사람 수 업데이트
+        redisTemplate.opsForValue().set(key, nowPeople + request.getPeople());
+
         return new ReserveResponse(ResponseType.STORE_RESERVE_SUCCESS);
     }
 
@@ -193,8 +213,15 @@ public class ReservationServiceImpl implements ReservationService {
             return new ReserveCheckOutResponse(ResponseType.STORE_RESERVE_CHECKOUT_FAIL, null);
         }
 
+        // 체크아웃 시간 업데이트
         reservation.updateCheckStatus(ReserveType.CHECK_OUT);
 
+        // 예약한 사람 수 업데이트
+        Long usedPeople = reservation.getPeople();
+        String key = RedisKeyType.STORES + "::rest::" + reservation.getStore().getId();
+        redisTemplate.opsForValue().getAndSet(key + reservation.getStore().getId(), redisTemplate.opsForValue().get(key) - usedPeople);
+        Long nowPeople = redisTemplate.opsForValue().get(key);
+        redisTemplate.opsForValue().set(key, nowPeople - usedPeople);
 
         return new ReserveCheckOutResponse(ResponseType.STORE_RESERVE_CHECKOUT_SUCCESS, LocalDateTime.now());
     }
