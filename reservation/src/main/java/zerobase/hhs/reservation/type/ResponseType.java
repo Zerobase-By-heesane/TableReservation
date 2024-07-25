@@ -24,6 +24,7 @@ public enum ResponseType {
 
     STORE_RESERVE_SUCCESS(HttpStatus.OK, "예약 성공"),
     STORE_RESERVE_FAIL(HttpStatus.BAD_REQUEST, "예약 실패"),
+    STORE_RESERVE_FAIL_OVER_CAPACITY(HttpStatus.BAD_REQUEST, "수용인원 초과"),
 
     STORE_RESERVE_CANCEL_SUCCESS(HttpStatus.OK, "예약 취소 성공"),
     STORE_RESERVE_CANCEL_FAIL(HttpStatus.BAD_REQUEST, "예약 취소 실패"),
