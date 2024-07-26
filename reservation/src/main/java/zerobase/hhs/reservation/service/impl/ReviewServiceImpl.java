@@ -20,6 +20,7 @@ import zerobase.hhs.reservation.repository.ReviewRepository;
 import zerobase.hhs.reservation.repository.StoreRepository;
 import zerobase.hhs.reservation.repository.UserRepository;
 import zerobase.hhs.reservation.service.ReviewService;
+import zerobase.hhs.reservation.type.ReserveType;
 import zerobase.hhs.reservation.type.ResponseType;
 
 import java.util.List;
@@ -47,6 +48,16 @@ public class ReviewServiceImpl implements ReviewService {
             Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(
                     () -> new CannotFindStore(ExceptionsType.CANNOT_FIND_STORE)
             );
+
+            // 해당 예약에 대해서 체크아웃이 되지 않은 경우,
+            if(reservation.getCheckStatus().equals(ReserveType.CHECK_OUT)) {
+                return new ReviewResponse(ResponseType.REVIEW_FAIL, 0, "");
+            }
+
+            // 해당 예약에 대해서 이미 리뷰를 쓴 경우,
+            if(reservation.getReview() != null) {
+                return new ReviewResponse(ResponseType.REVIEW_FAIL, 0, "");
+            }
 
             Review review = Review.builder()
                     .fulfillment(request.getFulfillment())
