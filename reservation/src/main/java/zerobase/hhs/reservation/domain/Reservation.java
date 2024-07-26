@@ -47,6 +47,9 @@ public class Reservation {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToOne(mappedBy = "reservation")
+    private Review review;
+
     public void updateCheckInTime(LocalDateTime time){
         this.checkInTime = time;
     }
