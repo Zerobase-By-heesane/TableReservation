@@ -37,6 +37,7 @@ public class SecurityConfig {
                         authorizeRequests -> authorizeRequests.requestMatchers("/v3/**","/api/auth/**","/swagger-ui/**").permitAll()
                                 .requestMatchers("/api/user/**").hasAnyAuthority("USER","PARTNER")
                                 .requestMatchers("/api/partner/**").hasRole("PARTNER")
+                                .requestMatchers("/api/review/**").hasAnyAuthority("USER","PARTNER")
 
                 )
                 .addFilterAfter(new LoginFilter(jwtProvider, jwtTokenUtil, userService,refreshService), UsernamePasswordAuthenticationFilter.class);
