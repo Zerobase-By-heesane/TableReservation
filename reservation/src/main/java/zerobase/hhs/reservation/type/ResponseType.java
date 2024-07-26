@@ -42,7 +42,17 @@ public enum ResponseType {
     STORE_RESERVE_DENY_SUCCESS(HttpStatus.OK, "예약 거부 성공"),
 
     STORE_RESERVE_LIST_SUCCESS(HttpStatus.OK, "예약 목록 조회 성공"),
-    STORE_RESERVE_LIST_FAIL(HttpStatus.BAD_REQUEST, "예약 목록 조회 실패");
+    STORE_RESERVE_LIST_FAIL(HttpStatus.BAD_REQUEST, "예약 목록 조회 실패"),
+
+    REVIEW_SUCCESS(HttpStatus.OK, "리뷰 조회 성공"),
+    REVIEW_FAIL(HttpStatus.BAD_REQUEST, "리뷰 조회 실패"),
+
+    REVIEW_UPDATE_SUCCESS(HttpStatus.OK, "리뷰 수정 성공"),
+    REVIEW_UPDATE_FAIL(HttpStatus.BAD_REQUEST, "리뷰 수정 실패"),
+
+    REVIEW_DELETE_SUCCESS(HttpStatus.OK, "리뷰 삭제 성공"),
+    REVIEW_DELETE_FAIL(HttpStatus.BAD_REQUEST, "리뷰 삭제 실패")
+    ;
 
     private final HttpStatus status;
     private final String message;
