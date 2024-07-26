@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import zerobase.hhs.reservation.dto.request.store.StoreUpdateRequest;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -44,6 +46,9 @@ public class Store extends BaseTimeEntity{
     @ManyToOne
     @JoinColumn(name="user_id")
     private User manager;
+
+    @OneToMany(mappedBy="store")
+    private List<Reservation> reservations;
 
     public void update(StoreUpdateRequest store){
         this.name = store.getStoreName();
