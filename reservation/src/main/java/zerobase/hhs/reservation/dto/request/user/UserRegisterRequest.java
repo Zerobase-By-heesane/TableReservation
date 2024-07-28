@@ -6,8 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import zerobase.hhs.reservation.type.UserRole;
 import zerobase.hhs.reservation.domain.User;
+import zerobase.hhs.reservation.type.UserRole;
+
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -25,7 +27,7 @@ public class UserRegisterRequest {
     @Email
     private String email;
 
-    private UserRole role;
+    private List<UserRole> role;
 
     public void update(String hashPassword){
         this.password = hashPassword;

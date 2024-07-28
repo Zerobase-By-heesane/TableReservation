@@ -36,7 +36,7 @@ public class User extends BaseTimeEntity {
 
     @Column(name="role")
     @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    private List<UserRole> userRole;
 
     @OneToMany(mappedBy="manager")
     private List<Store> stores;

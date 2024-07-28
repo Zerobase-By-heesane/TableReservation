@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import zerobase.hhs.reservation.domain.User;
 import zerobase.hhs.reservation.dto.JwtToken;
+import zerobase.hhs.reservation.type.UserRole;
 
 import java.security.Key;
 import java.util.Date;
@@ -38,7 +39,11 @@ public class JwtTokenUtil {
         Date refreshTokenExpired = new Date(now + REFRESH_TOKEN_EXPIRE_TIME);
 
         Claims authClaim = Jwts.claims();
-        authClaim.put("auth", user.getUserRole().name());
+
+        for(UserRole role : user.getUserRole()){
+            authClaim.put("auth", role.name());
+        }
+
 
         // Access Token 생성
         String accessToken = Jwts.builder()
