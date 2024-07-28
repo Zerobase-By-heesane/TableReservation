@@ -1,6 +1,7 @@
 package zerobase.hhs.reservation.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import zerobase.hhs.reservation.domain.Reservation;
 import zerobase.hhs.reservation.domain.Review;
@@ -24,7 +25,9 @@ import zerobase.hhs.reservation.type.ReserveType;
 import zerobase.hhs.reservation.type.ResponseType;
 
 import java.util.List;
+import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
@@ -50,19 +53,22 @@ public class ReviewServiceImpl implements ReviewService {
             );
 
             // 해당 예약에 대해서 체크아웃이 되지 않은 경우,
-            if(reservation.getCheckStatus().equals(ReserveType.CHECK_OUT)) {
+            if (!reservation.getCheckStatus().equals(ReserveType.CHECK_OUT)) {
                 return new ReviewResponse(ResponseType.REVIEW_FAIL, 0, "");
             }
 
             // 해당 예약에 대해서 이미 리뷰를 쓴 경우,
-            if(reservation.getReview() != null) {
+            if (reservation.getReview() != null) {
                 return new ReviewResponse(ResponseType.REVIEW_FAIL, 0, "");
             }
 
             Review review = Review.builder()
                     .fulfillment(request.getFulfillment())
                     .content(request.getContent())
+                    .reservation(reservation)
                     .build();
+
+            reservation.updateReview(review);
 
             reviewRepository.save(review);
         } catch (CannotFindStore e) {
@@ -74,6 +80,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     /**
      * 특정 가게에 등록된 모든 리뷰 조회
+     *
      * @param storeId 가게의 고유 ID값
      * @return 특정 가게의 모든 리뷰 리스트 반환
      */
@@ -86,7 +93,8 @@ public class ReviewServiceImpl implements ReviewService {
         );
 
         List<ReviewResponse> reviewListByStore = store.getReservations().stream()
-                .map(i -> new ReviewResponse(ResponseType.REVIEW_SUCCESS, i.getReview().getFulfillment(), i.getReview().getContent()))
+                .map(Reservation::getReview).filter(Objects::nonNull).toList().stream()
+                .map(i -> new ReviewResponse(ResponseType.REVIEW_SUCCESS, i.getFulfillment(), i.getContent()))
                 .toList();
 
 
@@ -100,16 +108,19 @@ public class ReviewServiceImpl implements ReviewService {
                 () -> new CannotFindStore(ExceptionsType.CANNOT_FIND_STORE)
         );
 
-        List<ReviewResponse> reviewListByUser = user.getReservations().stream()
-                .map(i -> new ReviewResponse(ResponseType.REVIEW_SUCCESS, i.getReview().getFulfillment(), i.getReview().getContent()))
-                .toList();
 
-        return new ReviewListResponse(reviewListByUser);
+        return new ReviewListResponse(user.getReservations().stream()
+                .map(Reservation::getReview)
+                .filter(Objects::nonNull)
+                .toList().stream()
+                .map(i -> new ReviewResponse(ResponseType.REVIEW_SUCCESS, i.getFulfillment(), i.getContent()))
+                .toList());
     }
 
 
     /**
      * 리뷰 수정
+     *
      * @param request 리뷰 고유 ID값, 수정할 만족도와 리뷰 내용 / extends ReviewRequest
      * @return 리뷰 수정 결과
      */
@@ -134,6 +145,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     /**
      * 리뷰 삭제
+     *
      * @param request 리뷰 고유 ID값
      * @return 리뷰 삭제 결과
      */
