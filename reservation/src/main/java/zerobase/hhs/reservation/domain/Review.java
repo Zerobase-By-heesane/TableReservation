@@ -1,10 +1,7 @@
 package zerobase.hhs.reservation.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name="review")
@@ -26,7 +23,8 @@ public class Review extends BaseTimeEntity{
     private String content;
 
     // 1 대 1 매핑
-    @OneToOne
+    @Setter
+    @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 
@@ -34,4 +32,5 @@ public class Review extends BaseTimeEntity{
         this.fulfillment = fulfillment;
         this.content = content;
     }
+
 }

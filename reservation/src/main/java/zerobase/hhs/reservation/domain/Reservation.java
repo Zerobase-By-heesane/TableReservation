@@ -47,7 +47,7 @@ public class Reservation {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(mappedBy = "reservation")
+    @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Review review;
 
     public void updateCheckInTime(LocalDateTime time){
@@ -60,5 +60,12 @@ public class Reservation {
 
     public void updateCheckStatus(ReserveType checkStatus){
         this.checkStatus = checkStatus;
+    }
+
+    public void updateReview(Review review){
+        this.review = review;
+        if (review != null) {
+            review.setReservation(this);
+        }
     }
 }
