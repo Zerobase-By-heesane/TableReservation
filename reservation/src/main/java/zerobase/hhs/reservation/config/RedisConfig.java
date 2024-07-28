@@ -59,22 +59,22 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Long> redisTemplate(){
+    public RedisTemplate<String, Object> redisTemplate(){
         // 사람의 수를 확인하기위한
-        RedisTemplate<String, Long> redisTemplate = new RedisTemplate<>();
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 
         redisTemplate.setConnectionFactory(redisConnectionFactory());
 
         // Key : Value 형식으로 사용할 경우 시리얼라이저
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
 
         // Hash를 사용할 경우 시리얼라이저
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashValueSerializer(new StringRedisSerializer());
 
         // 모든 경우
-        redisTemplate.setDefaultSerializer(new StringRedisSerializer());
+        redisTemplate.setDefaultSerializer(new GenericJackson2JsonRedisSerializer());
 
         return redisTemplate;
     }

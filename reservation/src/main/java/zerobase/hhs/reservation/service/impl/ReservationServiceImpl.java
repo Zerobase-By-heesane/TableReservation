@@ -36,7 +36,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
-    private final RedisTemplate<String,Long>  redisTemplate;
+    private final RedisTemplate<String,Object>  redisTemplate;
 
     /**
      * 내 예약 리스트 가져오기
@@ -91,13 +91,9 @@ public class ReservationServiceImpl implements ReservationService {
         // storesCache::rest::1
         // 현재 가게에 몇명의 사람이 있는지 확인
         String key = RedisKeyType.STORES + "::rest::" + storeId;
-        Long nowPeople = redisTemplate.opsForValue().get(key);
+        Integer nowPeople = Integer.valueOf(String.valueOf(Objects.requireNonNull(redisTemplate.opsForValue().get(key))));
 
         // 기존에 key값이 없었을 경우, 0으로 초기화
-        if(nowPeople == null){
-            nowPeople = 0L;
-        }
-
         // 현재 가게 안의 사람과 예약하려는 인원이 최대 수용인원보다 많거나 같다면 예약 실패
         if( nowPeople + request.getPeople() >= storeMaxCapacity){
             return new ReserveResponse(ResponseType.STORE_RESERVE_FAIL_OVER_CAPACITY);
@@ -219,9 +215,8 @@ public class ReservationServiceImpl implements ReservationService {
         // 예약한 사람 수 업데이트
         Long usedPeople = reservation.getPeople();
         String key = RedisKeyType.STORES + "::rest::" + reservation.getStore().getId();
-        redisTemplate.opsForValue().getAndSet(key + reservation.getStore().getId(), redisTemplate.opsForValue().get(key) - usedPeople);
-        Long nowPeople = redisTemplate.opsForValue().get(key);
-        redisTemplate.opsForValue().set(key, nowPeople - usedPeople);
+        Integer currentPeople = Integer.valueOf(String.valueOf(Objects.requireNonNull(redisTemplate.opsForValue().get(key))));
+        redisTemplate.opsForValue().set(key, currentPeople - usedPeople);
 
         return new ReserveCheckOutResponse(ResponseType.STORE_RESERVE_CHECKOUT_SUCCESS, LocalDateTime.now());
     }
